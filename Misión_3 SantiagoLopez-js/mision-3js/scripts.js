@@ -1,74 +1,84 @@
-function menu() {
-    let opcion = prompt("Seleccione una opción:\n\n1. Definir cantidad de estudiantes\n2. Registrar datos estudiantes\n3. Mostrar listado de estudiantes\n4. Registrar notas estudiantes\n5. Imprimir notas estudiantes\n6. Salir");
-    return opcion;
+var estudiantes = [];
+var totalEstudiantes = 0;
+
+function definirEstudiante() {
+    totalEstudiantes = parseInt(prompt("Cuántos estudiantes desea registrar?"));
 }
 
-function promNotas(nota1, nota2, nota3) {
-    return (nota1 + nota2 + nota3) / 3
+function registrarEstudiante(estudiante) {
+    var nombre = prompt("Ingrese el nombre del estudiante");
+    var codigo = parseInt(prompt("Ingrese el código del estudiante"));
+    var nivel = prompt("Ingrese el nivel (Beginner, Junior, Senior)");
+
+    estudiante.push({
+        nombre: nombre,
+        codigo: codigo,
+        nivel: nivel,
+        notas: []
+    });
 }
 
-let opcion = 0;
-let numEstudiantes = 0;
-let listado = [];
-let listNotas = [];
-
-while (opcion != 6) {
-    opcion = menu();
-    switch (opcion) {
-        case "1":
-            numEstudiantes = prompt("Ingrese el número de estudiantes");
-            break;
-
-        case "2":
-            for (let i = 0; i < numEstudiantes; i++) {
-
-                let nombre = prompt("Ingrese el nombre del estudiante " + (i+1));
-                let codigo = prompt("Ingrese el codigo del estudiante " + (i+1));
-                let nivel = prompt("Ingrese el nivel del estudiante " + (i+1));
-
-                listado.push({posicion: (i+1), nombre: nombre, codigo: codigo, nivel: nivel})
-            }
-            break;
-
-        case "3":
-            console.log("A continuación se muestra el listado registrado:");
-            
-            for (let i = 0; i < listado.length; i++) {
-                console.log(listado[i].posicion + ". Nombre: " + listado[i].nombre + " -- " + "Código: " + listado[i].codigo + " -- " + "Nivel: " + listado[i].nivel);
-            }
-            break;
-
-        case "4":
-            for (let i = 0; i < numEstudiantes; i++) {
-                
-                let nota1 = prompt("Ingrese la primer nota del estudiante " + (i+1));
-                let nota2 = prompt("Ingrese la segunda nota del estudiante " + (i+1));
-                let nota3 = prompt("Ingrese la tercer nota del estudiante " + (i+1));
-
-                if (nota1, nota2, nota3 > 5) {
-                    prompt("Se califica de 0 a 5")
-                }else{
-                    let prom = promNotas(nota1, nota2, nota3);
-
-                    listNotas.push({posicion: (i+1), nota: prom})
-                }
-            }
-            break; 
-
-        case "5":
-            console.log("Las notas de los estudiantes son:");
-
-            for (let i = 0; i < listNotas.length; i++) {
-                console.log("Estudiante " + listNotas[i].posicion + ". " + "Nota: " + listNotas[i].nota);
-            }
-            break;
-
-        case "6":
-            break;
-
-        default:
-            console.log("Opción inválida. Por favor seleccione una opción valida.");
-            break;
+function mostrarEstudiantes() {
+    console.log("Listado de estudiantes:");
+    for (var i = 0; i < estudiantes.length; i++) {
+        console.log(estudiantes[i].nombre + " - " + estudiantes[i].codigo + " - " + estudiantes[i].nivel);
     }
 }
 
+function registrarNotas() {
+    for (var i = 0; i < estudiantes.length; i++) {
+        for (var j = 0; j < 3; j++) {
+            var nota = parseFloat(prompt("Ingrese la nota " + (j + 1) + " de " + estudiantes[i].nombre));
+            while (nota < 0 || nota > 5) {
+                nota = parseFloat(prompt("Ingrese una nota válida entre 0 y 5"));
+            }
+            estudiantes[i].notas.push(nota);
+        }
+    }
+}
+
+function mostrarNotas() {
+    console.log("Notas de los estudiantes:");
+    var promedio = 0;
+    for (var i = 0; i < estudiantes.length; i++) {
+        var promEstudiante = 0;
+        for (var j = 0; j < estudiantes[i].notas.length; j++) {
+            promEstudiante += estudiantes[i].notas[j];
+        }
+        promEstudiante = promEstudiante / estudiantes[i].notas.length;
+        promedio += promEstudiante;
+        console.log(estudiantes[i].nombre + " - Promedio: " + promEstudiante.toFixed(2) + " - " + (promEstudiante >= 3.5 ? "Aprobó" : "Reprobó"));
+    }
+    promedio = promedio / estudiantes.length;
+    console.log("Promedio general del grupo de estudiantes: " + promedio.toFixed(2));
+}
+
+var opcion = 0;
+while (opcion !== 6) {
+    opcion = parseInt(prompt("Seleccione una opción:\n\n1. Definir cantidad de estudiantes\n2. Registrar datos estudiantes\n3. Mostrar listado de estudiantes\n4. Registrar notas estudiantes\n5. Imprimir notas estudiantes\n6. Salir"));
+    switch (opcion) {
+        case 1:
+            definirEstudiante();
+            break;
+        case 2:
+            for (var i = 0; i < totalEstudiantes; i++) {
+                registrarEstudiante(estudiantes);
+            }
+            break;
+        case 3:
+            mostrarEstudiantes();
+            break;
+        case 4:
+            registrarNotas();
+            break;
+        case 5:
+            mostrarNotas();
+            break;
+        case 6:
+            console.log("Saliendo del programa...");
+            break;
+        default:
+            console.log("Opción inválida, por favor seleccione una opción válida");
+            break;
+    }
+}
